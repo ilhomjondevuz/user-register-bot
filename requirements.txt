@@ -10,10 +10,12 @@ backports-datetime-fromisoformat==2.0.3
 certifi==2025.11.12
 environs==14.5.0
 frozenlist==1.8.0
+gunicorn==23.0.0
 idna==3.11
 magic-filter==1.0.12
 marshmallow==4.1.0
 multidict==6.7.0
+packaging==25.0
 propcache==0.4.1
 pydantic==2.5.3
 pydantic_core==2.14.6
