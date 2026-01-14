@@ -4,14 +4,14 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from data import config
-from keyboards.default import menu
+from keyboards.default import menu, add_direction
 from loader import dp
 from states import DirectionStatesGroup
 from utils.db_api.database import db
 
 
 @dp.message(F.text == "🎓 Yo'nalish qo'shish")
-async def add_direction(message: Message, state: FSMContext):
+async def add_direction_(message: Message, state: FSMContext):
     await message.answer("Yo'nalish nomini kiriting:" , reply_markup=ReplyKeyboardRemove())
     await state.set_state(DirectionStatesGroup.name)
 
@@ -35,7 +35,6 @@ async def send_contract_price(message: Message, state: FSMContext):
     data = await state.get_data()
     await db.add_direct(**data)
     await state.clear()
-    print(data)
     is_admin = str(message.from_user.id) in config.ADMINS
     markup = await add_direction() if is_admin else await menu()
     await message.answer(

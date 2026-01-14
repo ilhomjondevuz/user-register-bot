@@ -74,7 +74,7 @@ class Database:
 
     async def select_directions(self) -> list[dict]:
         query = """
-                SELECT name, contract
+                SELECT id, name, contract
                 FROM directions
                 ORDER BY contract DESC \
                 """
