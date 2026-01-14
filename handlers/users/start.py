@@ -2,7 +2,10 @@ from aiogram import types, F
 from aiogram.filters import CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 
-from keyboards.default import send_phone
+from data import config
+from filters.admins import AdminFilter
+from keyboards.default import send_phone, menu
+from keyboards.default import add_direction
 from loader import dp
 from states.registerStates import RegisterStates
 from utils.db_api.database import db
@@ -10,15 +13,26 @@ from utils.db_api.database import db
 
 @dp.message(CommandStart())
 async def bot_start(message: types.Message, state: FSMContext):
-    user = await db.select_user(int(message.from_user.id))
+    user_id = message.from_user.id
+    full_name = message.from_user.full_name or "foydalanuvchi"
+
+    user = await db.select_user(user_id)
+
     if user:
-        await message.answer(f"Assalomu alaykum {message.from_user.full_name}")
+        await state.clear()
+        is_admin = str(user_id) in config.ADMINS
+        markup = await add_direction() if is_admin else await menu()
+
+        await message.answer(
+            f"Assalomu alaykum, {full_name}",
+            reply_markup=markup
+        )
     else:
         await message.answer(
-            f"Salom, {message.from_user.full_name}!\n"
+            f"Salom, {full_name}!\n"
             f"Ism-familiyangizni kiriting:"
         )
-        await state.set_state(RegisterStates.first_name)
+        await state.set_state(RegisterStates.full_name)
 
 
 @dp.message(StateFilter(RegisterStates.first_name))

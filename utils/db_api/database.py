@@ -29,12 +29,14 @@ class Database:
     # Fetch multiple rows
     async def fetch(self, query: str, *args):
         async with self.pool.acquire() as conn:
-            return await conn.fetch(query, *args)
+            rows = await conn.fetch(query, *args)
+            return [dict(row) for row in rows]  # list of dict
 
     # Fetch single row
     async def fetchrow(self, query: str, *args):
         async with self.pool.acquire() as conn:
-            return await conn.fetchrow(query, *args)
+            row = await conn.fetchrow(query, *args)
+            return dict(row) if row else None  # single dict
 
     # Execute query (INSERT, UPDATE, DELETE)
     async def execute(self, query: str, *args):
@@ -62,6 +64,23 @@ class Database:
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow(query, tg_id)
             return dict(row) if row else None
+
+    async def add_direct(self, name: str, contract: float):
+        query = """
+        INSERT INTO directions (name, contract) values ($1, $2)
+                """
+        async with self.pool.acquire() as conn:
+            return await conn.execute(query, name, contract)
+
+    async def select_directions(self) -> list[dict]:
+        query = """
+                SELECT name, contract
+                FROM directions
+                ORDER BY contract DESC \
+                """
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetch(query)
+            return rows
 
 
 db = Database()
