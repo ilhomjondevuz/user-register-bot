@@ -82,5 +82,13 @@ class Database:
             rows = await conn.fetch(query)
             return rows
 
+    async def add_test(self, question: str, answer: str):
+        query = """
+                INSERT INTO tests (question, answer)
+                VALUES ($1, $2) \
+                """
+        async with self.pool.acquire() as conn:
+            return await conn.execute(query, question, answer)
+
 
 db = Database()

@@ -17,4 +17,4 @@ async def direction_choices(call: CallbackQuery, state: FSMContext):
     await state.set_data({
         'direction_id': int(data[-3]),
     })
-    await call.message.edit_reply_markup("")
+    await call.message.edit_reply_markup("O'qishga topshirildi endi imtihon topshiring")

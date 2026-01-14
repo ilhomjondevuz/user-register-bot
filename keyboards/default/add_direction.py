@@ -6,6 +6,9 @@ async def add_direction():
         keyboard=[
             [
                 KeyboardButton(text="🎓 Yo'nalish qo'shish")
+            ],
+            [
+                KeyboardButton(text="➕ Test qo'shish")
             ]
         ],
         resize_keyboard=True
